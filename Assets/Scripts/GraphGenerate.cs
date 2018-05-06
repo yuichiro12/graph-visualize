@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class GraphGenerate : MonoBehaviour {
 
-	public GameObject Node;
-	public GameObject Edge;
-	public Vector3 clickPosition;
-	private Vector3 start;
+	public GameObject NodePrefab;
+	public GameObject EdgePrefab;
 
 	// Update is called once per frame
 	void Update ()
@@ -30,11 +28,11 @@ public class GraphGenerate : MonoBehaviour {
 	}
 
 	private void CreateNode (Vector3 position) {
-		Instantiate (Node, position, Node.transform.rotation);
+		Instantiate (NodePrefab, position, NodePrefab.transform.rotation);
 	}
 
 	private void CreateEdge (GameObject node) {
-		var edge = Instantiate (Edge, node.transform.position, Edge.transform.rotation);
+		var edge = Instantiate (EdgePrefab, node.transform.position, EdgePrefab.transform.rotation);
 		edge.GetComponent<EdgeController>().SetStartNode(node);
 	}
 }

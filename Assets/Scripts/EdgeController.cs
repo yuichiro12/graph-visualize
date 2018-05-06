@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class EdgeController : MonoBehaviour {
 
+	public GameObject ConePrefab;
+	public bool isDirected;
+	private GameObject TopCone;
 	private GameObject StartNode;
 	private GameObject EndNode;
 	private bool isEdgeDragged;
@@ -26,6 +29,9 @@ public class EdgeController : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		isEdgeDragged = true;
+		if (this.isDirected) {
+			TopCone = Instantiate (ConePrefab);
+		}
 	}
 	
 	// Update is called once per frame
@@ -42,6 +48,7 @@ public class EdgeController : MonoBehaviour {
 				if (Physics.Raycast (ray.origin, ray.direction, out hit)) {
 					GameObject obj = hit.collider.gameObject;
 					if (obj.CompareTag ("node")) {
+						// fix this edge property
 						SetEndNode(obj);
 						setProperty (StartNode.transform.position, EndNode.transform.position);
 					} else {
@@ -63,8 +70,13 @@ public class EdgeController : MonoBehaviour {
 
 	// Mouse position 
 	private void setProperty (Vector3 start, Vector3 end) {
-		this.transform.rotation = Quaternion.FromToRotation (Vector3.up, end - start);
-		this.transform.position = (end - start) / 2f + start;
-		this.transform.localScale = new Vector3 (0.1f, Vector3.Magnitude (end - start) / 2f, 0.1f);
+		var dir = end - start;
+		this.transform.rotation = Quaternion.FromToRotation (Vector3.up, dir);
+		this.transform.position = dir / 2f + start;
+		this.transform.localScale = new Vector3 (0.1f, Vector3.Magnitude (dir) / 2f, 0.1f);
+		if (this.isDirected) {
+			TopCone.transform.rotation = Quaternion.FromToRotation (Vector3.back, dir);
+			TopCone.transform.position = end - dir.normalized * 0.2f;
+		}
 	}
 }
